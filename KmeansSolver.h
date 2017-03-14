@@ -20,8 +20,8 @@ class KmeansSolver {
 
 
 private:
-    list<cluster> *clusters; //c'è un cluster per ogni centroide
-    vector<entry> *centroids ;
+    list<cluster> clusters; //c'è un cluster per ogni centroide
+    vector<entry> centroids ;
     vector<entry> *points; //in ogni cluster ci possono essere n points
 
     entry* getNearestCentroid(entry, vector<entry>*);

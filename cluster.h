@@ -18,7 +18,7 @@ class cluster{
 
 private:
     entry* centroid;
-    std::list<entry>* points;
+    std::list<entry> points;
     int clusterID;
 
 public:
@@ -27,7 +27,6 @@ public:
         centroid = clusterCentroid;
         clusterID = id;
     }
-    ~cluster();
 
     entry* getCentroid(){
         return centroid;
@@ -47,11 +46,12 @@ public:
 
 
     void addPoint (entry point){
-        points->push_back(point);
+        points.push_back(point);
     }
 
     void printPoints(){
-        for (std::list<entry>::iterator it=(*points).begin(); it!=(*points).end(); ++it){ //ad ogni cluster assegno un centroide
+        for (std::list<entry>::iterator it=(points).begin(); it!=(points).end(); ++it){ //ad ogni cluster assegno un centroide
+            std::cout<<"\n";
             std::cout<< it->getId();
         };
     }
