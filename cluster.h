@@ -17,23 +17,31 @@
 class cluster{
 
 private:
-    entry* centroid;
-    std::list<entry> points;
+    entry centroid;
+    std::vector<entry> points;
     int clusterID;
 
 public:
 
     cluster(entry* clusterCentroid, int id){
-        centroid = clusterCentroid;
+        centroid = (*clusterCentroid);
         clusterID = id;
     }
 
     entry* getCentroid(){
-        return centroid;
+        return &centroid;
     }
 
+/*    void resetCentroid(){
+        centroid=
+    }*/
+
+    void deletePoints(){
+      points.clear();
+    };
+
     void setCentroid(entry* point){
-        centroid = point;
+        centroid = *point;
     }
 
     void setClusterID(int id){
@@ -50,11 +58,26 @@ public:
     }
 
     void printPoints(){
-        for (std::list<entry>::iterator it=(points).begin(); it!=(points).end(); ++it){ //ad ogni cluster assegno un centroide
-            std::cout<<"\n";
-            std::cout<< it->getId();
+        std::cout<<"\nID di tutti i punti appartenenti al Cluster: ";
+        std::cout<<clusterID;
+        std::cout<<" __\n";
+        for (std::vector<entry>::iterator it=(points).begin(); it!=(points).end(); ++it){ //ad ogni cluster assegno un centroide
+            std::cout<< it->getId()<<",  ";
         };
+        std::cout<<"\n";
     }
+
+    void changeCentroidAttributes(std::vector<double> attributes){
+        centroid.setNewAttributes(attributes);
+    }
+
+    std::vector<entry> getPoints(){
+        return points;
+    }
+
+
+
+
 
 };
 

@@ -6,12 +6,15 @@
 #include <ctime>
 
 
-int main(int numCentroids) {
-    srand((unsigned)time(nullptr));
+int main() {
+
+    int numCentroids=4;
+
     using namespace std;
-    cout<<"\n"+numCentroids;
-    std::string filePath = "C:\\Users\\Boris\\ClionProjects\\SerialKMeans\\dataset\\dataset_prova.txt";
-    FileReader *parser = new FileReader(filePath);
+    cout<<"\n numero di Centroidi:  "+numCentroids;
+    std::string datasetPath = "..\\..\\dataset\\dataset_prova.txt";
+    FileReader *parser = new FileReader(datasetPath);
+
 
     if(parser->getDataOutput() == false){
         return 1;
@@ -19,11 +22,9 @@ int main(int numCentroids) {
 
     int dimCentroids = parser->getAttributesDim();
     KmeansSolver *solver = new KmeansSolver(parser->getData(), numCentroids, dimCentroids);
+    //a questo punto sono già costruiti e popolati i clusters (con centroidi e punti).
+    solver->computeClusters();
 
-    cout<<"\n \nguarda un po' se va bene vai";
-
-    //adesso vengono inizializzati correttamente i cluster (con i punti ed i centroidi)
-    //c'è da fare la parte che ricalcola i centroidi in funzione dei punti e poi credo basti iterare
 
     return 0;
 

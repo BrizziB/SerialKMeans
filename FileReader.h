@@ -17,7 +17,6 @@ class FileReader {
 
 private:
 
-    ~FileReader();
     std::vector<entry> data ;
     std::string path;
     std::vector<entry> centroids;
@@ -25,11 +24,12 @@ private:
 
 
 public:
+    ~FileReader();
     FileReader(std::string filePath);
     //fai il distruttore poi !!
     bool getDataOutput();
-    std::vector<entry>* getData(){
-        return &(data);
+    std::vector<entry> getData(){
+        return (data);
     }
     int getAttributesDim(){
         return data[0].getdimAttributes();

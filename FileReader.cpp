@@ -26,7 +26,7 @@ bool FileReader::getDataOutput() {
     fileReaded = readFromFile(path);
 
     if(fileReaded){
-        cout<< "\ndataset acquired";
+        cout<< "\ndataset acquired\n";
         return true;
     }
     else {
