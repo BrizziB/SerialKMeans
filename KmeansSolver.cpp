@@ -220,22 +220,39 @@ void KmeansSolver::computeClusters() {
 void KmeansSolver::printOutput(int num){
 
     std::string output ="";
-/*    output += std::to_string(points.size());
+    output += std::to_string(points.size());
     output += "\n";
-    output += std::to_string(centroids.size());
+/*    output += std::to_string(centroids.size());
     output += "\n";*/
+    std::vector<double> attribs;
+    for(std::vector<cluster>::iterator itr=(clusters).begin(); itr!=(clusters).end(); ++itr){
 
-    for(std::vector<entry>::iterator itr=(points).begin(); itr!=(points).end(); ++itr){
-        output = itr->logAttributes(output);
 
+        //stampo attributi del centoride
+        attribs= itr->getCentroid()->getAttributes();
+        for(int i=0; i<attribs.size(); i++){
+            output += std::to_string(attribs.at(i));
+            output += " ";
+        }
+
+        output += "\n";
+        std::vector<entry> clusterPoints = itr->getPoints();
+
+
+        //stampo gli attributi di ogni punto del cluster
+        for(std::vector<entry>::iterator it=clusterPoints.begin(); it!=clusterPoints.end(); ++it){
+            attribs = it->getAttributes();
+            for(int i=0; i<attribs.size(); i++){
+                output += std::to_string(attribs.at(i));
+                output += " ";
+            }
+            output += "\n";
+        }
+
+        output += "\n";
     }
 
-    output += "\n";
-
-    for(std::vector<entry>::iterator itr=(centroids).begin(); itr!=(centroids).end(); ++itr){
-        output = itr->logAttributes(output);
-
-    }
+    //! si itera sui ogni cluster e di questo si stampa il centroide ed i points. così i punti sono già pronti per essere rappresentati
 
     outputWriter.writeFile(output, num);
 
