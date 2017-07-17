@@ -13,7 +13,7 @@
 #include <vector>
 
 
-class entry{
+class Point{
 private:
 
     unsigned int dimAttributes;
@@ -21,12 +21,12 @@ private:
     int encapsulatingClusterID ;
 
 public:
-    std::vector<double> attributes;
-    entry(){
+    std::vector<float> attributes;
+    Point(){
 
     }
 
-    entry(std::vector<double> attribs, int identifier){
+    Point(std::vector<float> attribs, int identifier){
         attributes = attribs;
         dimAttributes = attribs.size();
         id=identifier;
@@ -37,30 +37,28 @@ public:
         return dimAttributes;
     }
 
-    std::vector<double> getAttributes(){
+    std::vector<float> getAttributes(){
         return attributes;
     }
     int getId(){
         return id;
     }
 
-    double getAttribute(int index){
+    float getAttribute(int index){
 
         return attributes.at(index);
     }
 
     void printAttributes(){
-        int size=attributes.size();
+        //int size=attributes.size();
 
-        std::cout<<"-------------------------------------------------------------------------------------";
-        std::cout<<"\nattributi del punto:   "<<id<<"\n";
+        //std::cout<<"\nattributi del punto:   "<<id<<"\n";
 
-        for(int i=0; i<size; i++){
-            std::cout<<"attributo "<<i<<":  "<<attributes.at(i)<<"   ";
+        //for(int i=0; i<size; i++){
+        //    std::cout<<"attributo "<<i<<":  "<<attributes.at(i)<<"   ";
 
-        }
-        std::cout<<std::endl;
-        std::cout<<"------------------------------------------------------------------------------------"<<std::endl;
+        //}
+        //std::cout<<std::endl;
     }
     void printAttributes(std::string centroid){
         int size=attributes.size();
@@ -96,7 +94,7 @@ public:
     void setEncapsulatingClusterID(int id){
         encapsulatingClusterID=id;
     }
-    void setNewAttributes(std::vector<double> attribs){
+    void setNewAttributes(std::vector<float> attribs){
         attributes.clear();
         attributes.swap(attribs);
     }

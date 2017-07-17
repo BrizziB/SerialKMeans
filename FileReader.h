@@ -10,26 +10,30 @@
 #include <iterator>
 #include <algorithm>
 #include <vector>
-#include "entry.h"
+#include "Point.h"
 
 class FileReader {
 
 
 private:
 
-    std::vector<entry> data ;
-    std::string path;
-    std::vector<entry> centroids;
-    bool readFromFile(std::string path);
-
+    std::vector<Point> data ;
+    std::string datasetPath;
+    std::string centroidsPath;
+    std::vector<Point> centroids;
+    bool readDatasetFromFile(std::string path);
+    bool readCentroidsFromFile(std::string path);
 
 public:
     ~FileReader();
-    FileReader(std::string filePath);
+    FileReader(std::string filePath, std::string centroidsPath);
     //fai il distruttore poi !!
     bool getDataOutput();
-    std::vector<entry> getData(){
+    std::vector<Point> getData(){
         return (data);
+    }
+    std::vector<Point> getCenters(){
+        return (centroids);
     }
     int getAttributesDim(){
         return data[0].getdimAttributes();

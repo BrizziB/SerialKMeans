@@ -11,36 +11,33 @@
 #include <iterator>
 #include <algorithm>
 #include <vector>
-#include "entry.h"
+#include "Point.h"
 #include <list>
 
 class cluster{
 
 private:
-    entry centroid;
-    std::vector<entry> points;
+    Point centroid;
+    std::vector<Point> points;
     int clusterID;
 
 public:
 
-    cluster(entry* clusterCentroid, int id){
+    cluster(Point* clusterCentroid, int id){
         centroid = (*clusterCentroid);
         clusterID = id;
     }
 
-    entry* getCentroid(){
+    Point* getCentroid(){
         return &centroid;
     }
 
-/*    void resetCentroid(){
-        centroid=
-    }*/
 
     void deletePoints(){
       points.clear();
     };
 
-    void setCentroid(entry* point){
+    void setCentroid(Point* point){
         centroid = *point;
     }
 
@@ -53,25 +50,25 @@ public:
     }
 
 
-    void addPoint (entry point){
+    void addPoint (Point point){
         points.push_back(point);
     }
 
     void printPoints(){
-        std::cout<<"\nID di tutti i punti appartenenti al Cluster: ";
+ /*       std::cout<<"\nID di tutti i punti appartenenti al Cluster: ";
         std::cout<<clusterID;
         std::cout<<" __\n";
-        for (std::vector<entry>::iterator it=(points).begin(); it!=(points).end(); ++it){ //ad ogni cluster assegno un centroide
+        for (std::vector<Point>::iterator it=(points).begin(); it!=(points).end(); ++it){ //ad ogni cluster assegno un centroide
             std::cout<< it->getId()<<",  ";
-        };
+        };*/
         std::cout<<"\n";
     }
 
-    void changeCentroidAttributes(std::vector<double> attributes){
+    void changeCentroidAttributes(std::vector<float> attributes){
         centroid.setNewAttributes(attributes);
     }
 
-    std::vector<entry> getPoints(){
+    std::vector<Point> getPoints(){
         return points;
     }
 

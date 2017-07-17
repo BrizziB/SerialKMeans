@@ -11,7 +11,7 @@
 #include <vector>
 #include <list>
 #include "FileReader.h"
-#include "entry.h"
+#include "Point.h"
 #include "cluster.h"
 #include "FileWriter.h"
 
@@ -28,24 +28,24 @@ private:
     int numCentroids;
     int numAttributes;
     vector<cluster> clusters; //c'è un cluster per ogni centroide
-    vector<entry> centroids ;
-    vector<entry> points; //in ogni cluster ci possono essere n points
+    vector<Point> centroids ;
+    vector<Point> points; //in ogni cluster ci possono essere n points
 
-    entry* getNearestCentroid(entry, vector<entry>*);
-    double getEuclideanNDistance (entry, entry);
+    Point* getNearestCentroid(Point, vector<Point>*);
+    float getEuclideanNDistance (Point, Point);
     cluster* findClusterByID(int ID);
 
     void initCentroids(int num, int dim);
-    void initClusters(vector<cluster> *clusters, vector<entry>* centroids);
+    void initClusters(vector<cluster> *clusters, vector<Point>* centroids);
     void addPointsToCluster();
-    vector<double> getNewAttributes(vector<entry>);
+    vector<float> getNewAttributes(vector<Point>);
     void recalculateCentroids();
     bool reAssignPointsToClusters();
 
     void printOutput(int n);
 
 public:
-    KmeansSolver(std::vector<entry> points, int numCentroids, int dimCentroids);
+    KmeansSolver(std::vector<Point> points, std::vector<Point> centroids, int numCentroids, int dimCentroids);
     ~KmeansSolver();
     void computeClusters();
     void printAllCentroids();

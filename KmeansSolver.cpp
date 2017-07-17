@@ -9,37 +9,37 @@
 #include <random>
 
 
-KmeansSolver::KmeansSolver(std::vector<entry> dataPts, int numC, int numA) {
+KmeansSolver::KmeansSolver(std::vector<Point> dataPts, std::vector<Point> cents, int numC, int numA) {
 
     numCentroids=numC;
     numAttributes=numA;
     points=dataPts;
-    //è brutto mettere tutte queste responsabilità su un costruttore ma tanto il codice non dovrà mai essere modificato
-    initCentroids(numCentroids, numAttributes);
+
+    centroids = cents;
     initClusters(&clusters, &centroids);
     addPointsToCluster();
 
 }
 void KmeansSolver::initCentroids(int num, int dim){
-    double upperBound =10, lowerBound = -10; //questi potrebbero essere il massimo ed il minimo fra ogni attributo di ogni punto
+    float upperBound =10, lowerBound = -10; //questi potrebbero essere il massimo ed il minimo fra ogni attributo di ogni punto
     int range = upperBound-lowerBound;
-    std::vector<double> attribs;
+    std::vector<float> attribs;
 
-    double tmpAttrib;
+    float tmpAttrib;
     int index;
 
     std::mt19937 rng;
     rng.seed(std::random_device{}()); //non-deterministic seed
     std::uniform_int_distribution<int> dist(-10, 10);  //(min, max)
-    std::vector<double> tmpRandomArray;
-    //double tmpRandomArray[num*dim]= {1, 4, 3, 2, 3, 3, 4, 1};
-    double tmp;
+    std::vector<float> tmpRandomArray;
+    //float tmpRandomArray[num*dim]= {1, 4, 3, 2, 3, 3, 4, 1};
+    float tmp;
     for(int i=0; i<num*dim; i++) {
-        tmp = (double)dist(rng);
+        tmp = (float)dist(rng);
         tmpRandomArray.push_back(tmp);
     }
 
-    for(int i=0; i<num; i++){ //scorro ogni centroide - alla fine sto creando "num" entry
+    for(int i=0; i<num; i++){ //scorro ogni centroide - alla fine sto creando "num" Point
         //per ora inizializzo i centroidi con valori casuali di ogni attributo presi fra -10 e 10, poi si inseriranno metodi basati sui valori dei data
         attribs.clear();
         for(int j=0; j<dim; j++){ //scorro gli attributi di ogni centroide
@@ -51,14 +51,14 @@ void KmeansSolver::initCentroids(int num, int dim){
             std::cout<<"\n";
 
         }
-        entry newEntry = *(new entry(attribs, i));
+        Point newEntry = *(new Point(attribs, i));
         (centroids).push_back(newEntry);
 
     }
 };
 
-void KmeansSolver::initClusters(vector<cluster>* clusters, vector<entry>* centroids){
-    for (std::vector<entry>::iterator it=(*centroids).begin(); it!=(*centroids).end(); ++it){ //per ogni centroide inizializzo un cluster
+void KmeansSolver::initClusters(vector<cluster>* clusters, vector<Point>* centroids){
+    for (std::vector<Point>::iterator it=(*centroids).begin(); it!=(*centroids).end(); ++it){ //per ogni centroide inizializzo un cluster
 
         (*it).setEncapsulatingClusterID((*it).getId());
         cluster* newCluster = new cluster(&(*it), it->getId()); //NB centroidi e cluster hanno il medesimo ID
@@ -69,9 +69,9 @@ void KmeansSolver::initClusters(vector<cluster>* clusters, vector<entry>* centro
 
 };
 
-double KmeansSolver::getEuclideanNDistance(entry point, entry centroid){
+float KmeansSolver::getEuclideanNDistance(Point point, Point centroid){
 
-    double distance=0;
+    float distance=0;
     for(int i=0; i<point.getdimAttributes(); i++){ //scorre tutti gli attributi e ne somma il quadrato della differenza
         distance += pow((point.getAttributes()[i] - centroid.getAttributes()[i]), 2.0d);
     }
@@ -79,13 +79,13 @@ double KmeansSolver::getEuclideanNDistance(entry point, entry centroid){
 
 }
 
-entry* KmeansSolver::getNearestCentroid(entry point, std::vector<entry>* centroids){
+Point* KmeansSolver::getNearestCentroid(Point point, std::vector<Point>* centroids){
 
-    double minDistance=100000;
+    float minDistance=100000;
 
-    entry* closestCentroid;
-    double distance;
-    for(std::vector<entry>::iterator itr=(*centroids).begin(); itr!=(*centroids).end(); ++itr){
+    Point* closestCentroid;
+    float distance;
+    for(std::vector<Point>::iterator itr=(*centroids).begin(); itr!=(*centroids).end(); ++itr){
         distance = getEuclideanNDistance(point, *itr);
 
         if(minDistance > distance){
@@ -109,9 +109,9 @@ cluster* KmeansSolver::findClusterByID(int id){
 void KmeansSolver::addPointsToCluster(){
 
     cluster* wrappingCluster;
-    entry* nearestCentroid;
+    Point* nearestCentroid;
 
-    for(std::vector<entry>::iterator itr=(points).begin(); itr!=(points).end(); ++itr){
+    for(std::vector<Point>::iterator itr=(points).begin(); itr!=(points).end(); ++itr){
 
         nearestCentroid = getNearestCentroid((*itr), &centroids); //trovato il centroide più vicino al punto
         wrappingCluster = findClusterByID(nearestCentroid->getId());
@@ -121,18 +121,18 @@ void KmeansSolver::addPointsToCluster(){
 
 };
 
-std::vector<double> divideAllAttributesBy(vector<double> attributes, double num){
-    std::vector<double> tmp;
+std::vector<float> divideAllAttributesBy(vector<float> attributes, float num){
+    std::vector<float> tmp;
     for(int i=0; i<attributes.size(); i++){
         tmp[i]=attributes[i]/num;
     }
     return tmp;
 }
 
-vector<double> KmeansSolver::getNewAttributes(vector<entry> points){
+vector<float> KmeansSolver::getNewAttributes(vector<Point> points){
     int numAttributes = KmeansSolver::numAttributes;
     int numPoints = points.size();
-    double sum[numAttributes];
+    float sum[numAttributes];
     for(int j=0; j<numAttributes; j++){
         sum[j] = 0;
     }
@@ -145,21 +145,20 @@ vector<double> KmeansSolver::getNewAttributes(vector<entry> points){
     for(int j=0; j<numAttributes; j++){
         sum[j] = sum[j]/numPoints;
     }
-
-    vector<double> tmp(sum, sum +sizeof(sum)/ sizeof(sum[0]) );
+    vector<float> tmp(sum, sum +sizeof(sum)/ sizeof(sum[0]) );
 
     return tmp;
 }
 
 void KmeansSolver::recalculateCentroids(){
     centroids.clear();
-    entry centroid;
+    Point centroid;
     vector<cluster>::iterator iterator =clusters.begin();
     for(int i=0; i<clusters.size(); i++){
-        vector<entry> tmpPts = iterator->getPoints();
+        vector<Point> tmpPts = iterator->getPoints();
 
-        vector<double> tmp=(getNewAttributes(tmpPts));
-        centroid = (*new entry(tmp, iterator->getClusterID()));
+        vector<float> tmp=(getNewAttributes(tmpPts));
+        centroid = (*new Point(tmp, iterator->getClusterID()));
         centroid.setEncapsulatingClusterID(iterator->getClusterID());
 
         centroids.push_back(centroid);
@@ -181,40 +180,49 @@ bool KmeansSolver::reAssignPointsToClusters(){
 
     int nearestCentroidID;
     int currentCentroidID;
-    bool changed=false;
+    int changed=0;
+    bool significantChange = false;
+    int numPts = points.size();
 
-    for(std::vector<entry>::iterator itr=(points).begin(); itr!=(points).end(); ++itr){
+    for(std::vector<Point>::iterator itr=(points).begin(); itr!=(points).end(); ++itr){
 
         currentCentroidID = (*itr).getEncapsulatingClusterID();
         nearestCentroidID = (*getNearestCentroid((*itr), &centroids)).getId(); //trovato il centroide più vicino al punto
-        if(currentCentroidID!=nearestCentroidID){
-            changed=true;
+        if(currentCentroidID != nearestCentroidID){
+            changed++;
         }
         wrappingCluster = findClusterByID(nearestCentroidID);
         wrappingCluster->addPoint((*itr));
         (*itr).setEncapsulatingClusterID(wrappingCluster->getClusterID());
     }
 
-    return changed;
+    if(changed > numPts/500){
+        significantChange = true;
+    }
+
+    return significantChange;
 }
 
 void KmeansSolver::computeClusters() {
     bool changeHappened;
     int i=0;
-    printOutput(i);
+    //printOutput(i);
     do{
 
         cout<<"############## iterazione numero:  "<< i<<"  ################\n";
 
         recalculateCentroids();
         changeHappened = reAssignPointsToClusters();
-        printState();
-        printOutput(i+1);
+        //printState();
+       //printOutput(i+1);
         i++;
 
-        cout<<"##############################################################\n\n\n";
+        //cout<<"##############################################################\n\n\n";
     }
     while(changeHappened);
+    for(Point centroid:centroids){
+        centroid.printAttributes();
+    }
 }
 
 void KmeansSolver::printOutput(int num){
@@ -224,11 +232,11 @@ void KmeansSolver::printOutput(int num){
     output += "\n";
 /*    output += std::to_string(centroids.size());
     output += "\n";*/
-    std::vector<double> attribs;
+    std::vector<float> attribs;
     for(std::vector<cluster>::iterator itr=(clusters).begin(); itr!=(clusters).end(); ++itr){
 
 
-        //stampo attributi del centoride
+        //stampo attributi del centroide
         attribs= itr->getCentroid()->getAttributes();
         for(int i=0; i<attribs.size(); i++){
             output += std::to_string(attribs.at(i));
@@ -236,11 +244,11 @@ void KmeansSolver::printOutput(int num){
         }
 
         output += "\n";
-        std::vector<entry> clusterPoints = itr->getPoints();
+        std::vector<Point> clusterPoints = itr->getPoints();
 
 
         //stampo gli attributi di ogni punto del cluster
-        for(std::vector<entry>::iterator it=clusterPoints.begin(); it!=clusterPoints.end(); ++it){
+        for(std::vector<Point>::iterator it=clusterPoints.begin(); it!=clusterPoints.end(); ++it){
             attribs = it->getAttributes();
             for(int i=0; i<attribs.size(); i++){
                 output += std::to_string(attribs.at(i));
@@ -264,12 +272,12 @@ void KmeansSolver::printState(){
     cout<<"\n---------------------------------------------------------------------------------------\n";
     for(std::vector<cluster>::iterator itr=(clusters).begin(); itr!=(clusters).end(); ++itr){
 
-        itr->printPoints();
+        //itr->printPoints();
 
-        itr->getCentroid()->printAttributes("test");
+        //itr->getCentroid()->printAttributes("test");
 
-        std::vector<entry> clusterPoints = itr->getPoints();
-        for(std::vector<entry>::iterator it=clusterPoints.begin(); it!=clusterPoints.end(); ++it){
+        std::vector<Point> clusterPoints = itr->getPoints();
+        for(std::vector<Point>::iterator it=clusterPoints.begin(); it!=clusterPoints.end(); ++it){
             it->printAttributes();
         }
 
